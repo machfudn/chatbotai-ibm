@@ -16,6 +16,41 @@ export const Send = ({ size = 20, className = '' }) => (
   </svg>
 );
 
+export const Edit3 = ({ size = 24, className = '', color = 'currentColor', strokeWidth = 2, ...props }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke={color}
+    strokeWidth={strokeWidth}
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    className={className}
+    {...props}>
+    <path d='M12 20h9' />
+    <path d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z' />
+  </svg>
+);
+
+export const Check = ({ size = 24, className = '', strokeWidth = 2, ...props }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      stroke='currentColor'
+      strokeWidth={strokeWidth}
+      strokeLinecap='round'
+      strokeLinejoin='round'
+      className={className}
+      {...props}>
+      <polyline points='20,6 9,17 4,12' />
+    </svg>
+  );
+};
+
 export const Bot = ({ size = 20, className = '' }) => (
   <svg
     width={size}

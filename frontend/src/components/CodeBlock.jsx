@@ -42,10 +42,10 @@ const CodeBlock = ({ code, language = 'text' }) => {
       </div>
 
       {/* Code Content */}
-      <div className='p-4 overflow-x-auto'>
-        <pre className='text-sm text-gray-100'>
+      <div className='px-4 py-5'>
+        <p className='text-sm text-gray-100 whitespace-pre-wrap max-h-[80vh] '>
           <code>{code}</code>
-        </pre>
+        </p>
       </div>
     </div>
   );

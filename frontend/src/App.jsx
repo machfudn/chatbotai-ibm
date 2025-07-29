@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, Bot, User, Settings, Loader2 } from './components/Icons';
-import Modal from './components/ModalConfiguration';
+import ModalSetting from './components/ModalSetting';
 import MessageParser from './components/MessageParser';
 import { useToast, ToastContainer } from './components/Toast';
 
@@ -37,8 +37,14 @@ export default function App() {
 
       // Deteksi jenis request dan estimasi token yang dibutuhkan
       const patterns = [
-        { keywords: ['explain', 'elaborate', 'detail', 'comprehensive'], multiplier: 3 },
-        { keywords: ['code', 'programming', 'function', 'script'], multiplier: 4 },
+        {
+          keywords: ['explain', 'elaborate', 'detail', 'comprehensive'],
+          multiplier: 3,
+        },
+        {
+          keywords: ['code', 'programming', 'function', 'script'],
+          multiplier: 4,
+        },
         { keywords: ['essay', 'article', 'write', 'story'], multiplier: 5 },
         { keywords: ['list', 'steps', 'tutorial', 'guide'], multiplier: 3.5 },
         { keywords: ['analyze', 'comparison', 'compare'], multiplier: 3.5 },
@@ -89,6 +95,16 @@ export default function App() {
       };
     },
   };
+  useEffect(() => {
+    const theme = localStorage.getItem('theme') || 'system';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (theme === 'dark' || (theme === 'system' && prefersDark)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   // Enhanced sendMessage function
   const sendMessage = async () => {
@@ -308,196 +324,328 @@ export default function App() {
   const renderMessage = message => {
     console.log('Rendering message:', message);
     if (message.type === 'user') {
-      return <div className='whitespace-pre-wrap'>{message.content}</div>;
+      return (
+        <div
+          className='
+            whitespace-pre-wrap
+          '>
+          {message.content}
+        </div>
+      );
     } else if (message.type === 'bot') {
       return <MessageParser content={message.content} wasTruncated={message.wasTruncated} />;
     } else if (message.type === 'error') {
-      return <div className='whitespace-pre-wrap text-red-600'>{message.content}</div>;
+      return (
+        <div
+          className='
+            whitespace-pre-wrap text-red-600
+          '>
+          {message.content}
+        </div>
+      );
     } else {
-      return <div className='whitespace-pre-wrap'>{message.content}</div>;
+      return (
+        <div
+          className='
+            whitespace-pre-wrap
+          '>
+          {message.content}
+        </div>
+      );
     }
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'>
-      <div className='container mx-auto max-w-4xl p-4'>
+    <div
+      className='
+        min-h-screen bg-white dark:bg-gray-800
+      '>
+      <div
+        className='
+          container flex flex-col
+          h-screen
+          mx-auto p-4
+          justify-between
+        '>
         {/* Header */}
-        <div className='bg-white rounded-lg shadow-lg mb-4 p-4'>
-          <div className='flex justify-between items-center'>
-            <h1 className='text-2xl font-bold text-gray-800 flex items-center gap-2'>
-              <Bot className='text-blue-600' />
+        <div
+          className='
+            mb-4 p-4
+            bg-white dark:bg-gray-700
+            rounded-lg
+            shadow-lg
+          '>
+          <div
+            className='
+              flex
+              justify-between items-center
+            '>
+            <h1
+              className='
+                flex
+                text-2xl font-bold text-gray-800 dark:text-white
+                items-center gap-2
+              '>
+              <Bot
+                className='
+                  text-blue-600
+                '
+              />
               Chatbot AI IBM Granite
             </h1>
-            <div className='flex gap-2 items-center'>
+            <div
+              className='
+                flex
+                gap-2 items-center
+              '>
               {/* Token Usage Display */}
               {tokenUsage && (
-                <div className='text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg'>
-                  <span className='font-medium'>Tokens:</span> {tokenUsage.totalTokens}
-                  <span className='text-gray-400'> / {tokenUsage.maxTokens}</span>
-                  {tokenUsage.responseTokens >= tokenUsage.maxTokens * 0.95 && <span className='text-orange-600 ml-2'>⚠ Truncated</span>}
+                <div
+                  className='
+                    px-3 py-1
+                    text-sm text-gray-600
+                    bg-gray-100
+                    rounded-lg
+                  '>
+                  <span
+                    className='
+                      font-medium
+                    '>
+                    Tokens:
+                  </span>{' '}
+                  {tokenUsage.totalTokens}
+                  <span
+                    className='
+                      text-gray-400
+                    '>
+                    {' '}
+                    / {tokenUsage.maxTokens}
+                  </span>
+                  {tokenUsage.responseTokens >= tokenUsage.maxTokens * 0.95 && (
+                    <span
+                      className='
+                        ml-2
+                        text-orange-600
+                      '>
+                      ⚠ Truncated
+                    </span>
+                  )}
                 </div>
               )}
-              <button onClick={() => setShowSettings(true)} className='p-2 text-gray-600 hover:text-blue-600 transition-colors'>
+              <button
+                onClick={() => setShowSettings(true)}
+                className='
+                  p-2
+                  text-gray-600 dark:text-white
+                  transition-colors
+                  hover:text-blue-600
+                '>
                 <Settings size={20} />
-              </button>
-              <button onClick={clearChat} className='px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors'>
-                Clear Chat
               </button>
             </div>
           </div>
         </div>
 
         {/* Settings Modal */}
-        <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title='Model Configuration'>
-          <div className='space-y-4'>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Temperature: {isNaN(config.temperature) ? 0 : config.temperature}
-                <span className='text-xs text-gray-500 ml-2'>(Higher = more creative)</span>
-              </label>
-              <div className='flex gap-2 items-center'>
-                <input
-                  type='number'
-                  value={isNaN(config.temperature) ? '' : config.temperature}
-                  onChange={e => updateConfig('temperature', parseFloat(e.target.value))}
-                  className='w-16 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500'
-                />
-              </div>
-            </div>
+        <ModalSetting
+          showSettings={showSettings}
+          setShowSettings={setShowSettings}
+          clearChat={clearChat}
+          config={config}
+          updateConfig={updateConfig}
+        />
 
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Max Tokens: {isNaN(config.max_tokens) ? 0 : config.max_tokens}
-                <span className='text-xs text-gray-500 ml-2'>(Response length limit)</span>
-              </label>
-              <div className='flex gap-2 items-center'>
-                <input
-                  type='number'
-                  value={isNaN(config.max_tokens) ? '' : config.max_tokens}
-                  onChange={e => updateConfig('max_tokens', parseInt(e.target.value))}
-                  className='w-20 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500'
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Top P: {isNaN(config.top_p) ? 0 : config.top_p}
-                <span className='text-xs text-gray-500 ml-2'>(Nucleus sampling)</span>
-              </label>
-              <div className='flex gap-2 items-center'>
-                <input
-                  type='number'
-                  value={isNaN(config.top_p) ? '' : config.top_p}
-                  onChange={e => updateConfig('top_p', parseFloat(e.target.value))}
-                  className='w-16 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500'
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
-                Top K: {isNaN(config.top_k) ? 0 : config.top_k}
-                <span className='text-xs text-gray-500 ml-2'>(Vocabulary diversity)</span>
-              </label>
-              <div className='flex gap-2 items-center'>
-                <input
-                  type='number'
-                  value={isNaN(config.top_k) ? '' : config.top_k}
-                  onChange={e => updateConfig('top_k', parseInt(e.target.value))}
-                  className='w-16 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500'
-                />
-              </div>
-            </div>
-
-            <div className='pt-4 border-t'>
-              <p className='text-xs text-gray-500'>
-                <strong>Note:</strong> Max tokens will auto-adjust if responses get truncated.
+        <div
+          className='
+            flex-1 overflow-y-auto
+            w-full
+          '>
+          {messages.length === 0 ? (
+            <div
+              className='
+                flex flex-col
+                h-full
+                p-4
+                text-gray-500 dark:text-white
+                items-center justify-center
+              '>
+              <Bot
+                size={48}
+                className='
+                  mb-4
+                  text-gray-300
+                '
+              />
+              <p>Start a conversation with IBM Granite AI!</p>
+              <p
+                className='
+                  mt-2
+                  text-sm
+                '>
+                Try asking about LLMs, coding, or any topic.
               </p>
             </div>
-          </div>
-        </Modal>
-
-        {/* Chat Container */}
-        <div className='bg-white rounded-lg shadow-lg flex flex-col h-96'>
-          {/* Messages */}
-          <div className='flex-1 overflow-y-auto p-4 space-y-4'>
-            {messages.length === 0 ? (
-              <div className='text-center text-gray-500 mt-8'>
-                <Bot size={48} className='mx-auto text-gray-300 mb-4' />
-                <p>Start a conversation with IBM Granite AI!</p>
-                <p className='text-sm mt-2'>Try asking about LLMs, coding, or any topic you're curious about.</p>
-              </div>
-            ) : (
-              messages.map((message, index) => (
-                <div key={index} className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  {message.type !== 'user' && (
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${message.type === 'error' ? 'bg-red-100' : 'bg-blue-100'}`}>
-                      <Bot size={16} className={message.type === 'error' ? 'text-red-600' : 'text-blue-600'} />
-                    </div>
-                  )}
+          ) : (
+            <div
+              className='
+                w-full
+              '>
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`
+                    w-full
+                    mb-4
+                    ${message.type === 'user' ? 'flex justify-end' : 'flex justify-start'}
+                  `}>
                   <div
-                    className={`max-w-xs lg:max-w-md ${
-                      message.type === 'user'
-                        ? 'bg-blue-600 text-white px-4 py-2 rounded-lg'
-                        : message.type === 'error'
-                        ? 'bg-red-100 text-red-800 px-4 py-2 rounded-lg'
-                        : 'bg-gray-100 text-gray-800 p-3 rounded-lg'
-                    }`}>
-                    {renderMessage(message)}
-                    <div className='flex justify-between items-center mt-2'>
-                      <p className='text-xs opacity-70'>{message.timestamp.toLocaleTimeString()}</p>
-                      {message.tokenUsage && <p className='text-xs opacity-70'>{message.tokenUsage.responseTokens} tokens</p>}
+                    className={`
+                      flex
+                      px-4
+                      items-start gap-3
+                      ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}
+                    `}>
+                    {message.type !== 'user' && (
+                      <div
+                        className='
+                          flex flex-shrink-0
+                          w-8 h-8
+                          rounded-full
+                          items-center justify-center
+                        '>
+                        <Bot
+                          size={16}
+                          className='
+                            text-gray-500 dark:text-white
+                          '
+                        />
+                      </div>
+                    )}
+
+                    <div
+                      className={`
+                        w-full
+                        px-4 py-2 mb-2
+                        rounded-lg text-lg
+                        ${message.type === 'user' ? 'bg-gray-200 text-black' : 'text-gray-800 dark:text-white'}
+                      `}>
+                      {renderMessage(message)}
+                      <div
+                        className='
+                          flex
+                          mt-1
+                          text-xs text-gray-500 dark:text-white
+                          justify-between items-center
+                        '>
+                        <span className={`${message.type === 'user' ? ' hidden' : 'text-gray-800 dark:text-white'}`}>
+                          {message.timestamp.toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false,
+                          })}
+                        </span>
+                        {message.tokenUsage && <span>{message.tokenUsage.responseTokens} tokens</span>}
+                      </div>
                     </div>
                   </div>
-                  {message.type === 'user' && (
-                    <div className='w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center'>
-                      <User size={16} className='text-white' />
-                    </div>
-                  )}
                 </div>
-              ))
-            )}
-            {isLoading && (
-              <div className='flex gap-3 justify-start'>
-                <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center'>
-                  <Loader2 size={16} className='text-blue-600 animate-spin' />
-                </div>
-                <div className='bg-gray-100 text-gray-800 px-4 py-2 rounded-lg'>
-                  <p>Thinking...</p>
-                </div>
-              </div>
-            )}
-          </div>
+              ))}
 
-          {/* Input */}
-          <div className='border-t p-4'>
-            <div className='flex gap-2'>
-              <textarea
-                value={inputMessage}
-                onChange={e => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder='Type your message here... (Press Enter to send)'
-                className='flex-1 border border-gray-300 rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500'
-                rows={2}
-                disabled={isLoading}
-              />
-              <button
-                onClick={sendMessage}
-                disabled={isLoading || !inputMessage.trim()}
-                className='bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'>
-                <Send size={20} />
-              </button>
+              {isLoading && (
+                <div
+                  className='
+                    flex
+                    w-full
+                    px-4 mb-4
+                    justify-start
+                  '>
+                  <div
+                    className='
+                      flex
+                      items-start gap-3
+                    '>
+                    <div
+                      className='
+                        flex
+                        w-8 h-8
+                        rounded-full
+                        items-center justify-center
+                      '>
+                      <Loader2
+                        size={16}
+                        className='
+                          text-gray-500 dark:text-white
+                          animate-spin
+                        '
+                      />
+                    </div>
+                    <div
+                      className='
+                        px-4 py-2
+                        text-gray-800 dark:text-white
+                        rounded-lg
+                      '>
+                      <p>Thinking...</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
+        {/* Input */}
+        <div
+          className='
+            p-4
+          '>
+          <div
+            className='
+              flex
+              gap-2
+            '>
+            <textarea
+              value={inputMessage}
+              onChange={e => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder='Type your message here... (Press Enter to send)'
+              rows={2}
+              disabled={isLoading}
+              className='
+                flex-1
+                px-3 py-2 dark:text-white dark:placeholder:text-white
+                border border-gray-300 rounded-lg
+                resize-none
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+              '
+            />
+            <button
+              onClick={sendMessage}
+              disabled={isLoading || !inputMessage.trim()}
+              className='
+                p-2
+                text-white
+                bg-blue-600
+                rounded-lg
+                transition-colors
+                hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed
+              '>
+              <Send size={20} />
+            </button>
+          </div>
+        </div>
         {/* Info */}
-        <div className='mt-4 text-center text-sm text-gray-500'>
+        <div
+          className='
+            mt-4
+            text-center text-sm text-gray-500 dark:text-white
+          '>
           <p>Powered by IBM Granite 3.3 8B Instruct via Replicate</p>
           {tokenUsage && (
-            <p className='mt-1'>
+            <p
+              className='
+                mt-1
+              '>
               Last response: {tokenUsage.promptTokens} prompt + {tokenUsage.responseTokens} response = {tokenUsage.totalTokens} total tokens
             </p>
           )}

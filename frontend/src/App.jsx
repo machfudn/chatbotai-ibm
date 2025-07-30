@@ -167,7 +167,7 @@ export default function App() {
         top_p: parseFloat(config.top_p) || 0.9,
       };
 
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch(import.meta.env.VITE_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ export default function App() {
         top_p: parseFloat(adjustedConfig.top_p) || 0.9,
       };
 
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch(import.meta.env.VITE_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -335,7 +335,7 @@ export default function App() {
           // Retry dengan token lebih besar
           try {
             const retryConfig = { ...sanitizedConfig, max_tokens: retryTokens };
-            const retryResponse = await fetch('http://localhost:5000/api/chat', {
+            const retryResponse = await fetch(import.meta.env.VITE_API_URL, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

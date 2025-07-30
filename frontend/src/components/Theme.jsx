@@ -44,7 +44,7 @@ const Theme = () => {
       {/* System Theme Button */}
       <button
         onClick={() => setTheme('system')}
-        className={`p-4 text-left rounded-lg transition-colors ${
+        className={`p-4 text-left rounded-lg transition-colors cursor-pointer ${
           theme === 'system'
             ? 'bg-gray-200 dark:bg-gray-400 text-black dark:text-white'
             : 'text-black dark:text-white hover:text-black dark:hover:text-white dark:hover:bg-gray-600 hover:bg-gray-300 '
@@ -56,7 +56,7 @@ const Theme = () => {
       {/* Light Theme Button */}
       <button
         onClick={() => setTheme('light')}
-        className={`p-4 text-left rounded-lg transition-colors ${
+        className={`p-4 text-left rounded-lg transition-colors cursor-pointer ${
           theme === 'light'
             ? 'bg-gray-200 dark:bg-gray-400 text-black dark:text-white'
             : 'text-black dark:text-white hover:text-black dark:hover:text-white dark:hover:bg-gray-600 hover:bg-gray-300 '
@@ -68,7 +68,7 @@ const Theme = () => {
       {/* Dark Theme Button */}
       <button
         onClick={() => setTheme('dark')}
-        className={`p-4 text-left rounded-lg transition-colors ${
+        className={`p-4 text-left rounded-lg transition-colors cursor-pointer ${
           theme === 'dark'
             ? 'bg-gray-200 dark:bg-gray-400 text-black dark:text-white'
             : 'text-black dark:text-white hover:text-black dark:hover:text-white dark:hover:bg-gray-600 hover:bg-gray-300 '

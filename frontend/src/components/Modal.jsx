@@ -23,14 +23,14 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center p-4' role='dialog' aria-modal='true' aria-labelledby='modal-title'>
+    <div className='fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4' role='dialog' aria-modal='true' aria-labelledby='modal-title'>
       {/* Backdrop with fade-in animation */}
       <div className='absolute inset-0 bg-black/80 transition-opacity duration-300' onClick={onClose} aria-hidden='true' />
 
       {/* Modal content with slide-in animation */}
       <div
         id='modal-content'
-        className='relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300'
+        className='relative bg-white rounded-lg shadow-xl w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl max-h-[90vh] overflow-hidden transform transition-all duration-300'
         tabIndex={-1}>
         {/* Header */}
         <div className='sticky bg-white dark:bg-gray-800 top-0 z-10 flex items-center justify-between p-4 bg-white'>

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { CopyIcon, CheckIcon } from './Icons';
+import { useToast, ToastContainer } from './Toast';
 
 const CodeBlock = ({ code, language = 'text' }) => {
   const [copied, setCopied] = useState(false);
+  const { showError } = useToast();
 
   const copyToClipboard = async () => {
     try {
@@ -10,7 +12,7 @@ const CodeBlock = ({ code, language = 'text' }) => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy code:', err);
+      showError('Failed to copy code :' + err, 3000);
     }
   };
 
@@ -43,7 +45,7 @@ const CodeBlock = ({ code, language = 'text' }) => {
 
       {/* Code Content */}
       <div className='px-4 py-5'>
-        <p className='text-sm text-gray-100 whitespace-pre-wrap max-h-[80vh] '>
+        <p className='text-sm h-full text-gray-100 whitespace-pre-wrap  '>
           <code>{code}</code>
         </p>
       </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Send, Bot, User, Settings, Loader2, Edit3, Check, X } from './components/Icons';
+import { Send, IBMIcon, User, Settings, Loader2, Edit3, Check, X } from './components/Icons';
 import ModalSetting from './components/ModalSetting';
 import MessageParser from './components/MessageParser';
 import { useToast, ToastContainer } from './components/Toast';
@@ -150,8 +150,7 @@ export default function App() {
       // Generate respons baru untuk pesan yang telah diedit
       await generateNewResponse(editedContent);
     } catch (error) {
-      console.error('Error saving edited message:', error);
-      showError('Failed to save edited message', 3000);
+      showError('Failed to save edited message :' + error, 3000);
     } finally {
       setIsLoading(false);
     }
@@ -212,7 +211,6 @@ export default function App() {
         throw new Error(data.error || data.message || 'Unknown error occurred');
       }
     } catch (error) {
-      console.error('Error generating new response:', error);
       showError(`Failed to generate new response: ${error.message}`, 5000);
     }
   };
@@ -280,13 +278,6 @@ export default function App() {
       }));
     }
 
-    console.log('Token Analysis:', {
-      predicted: tokenAnalysis.predicted,
-      recommended: tokenAnalysis.recommended,
-      current: config.max_tokens,
-      adjusted: adjustedConfig.max_tokens,
-    });
-
     setInputMessage('');
     setIsLoading(true);
 
@@ -308,8 +299,6 @@ export default function App() {
         top_p: parseFloat(adjustedConfig.top_p) || 0.9,
       };
 
-      console.log('Sending config:', sanitizedConfig);
-
       const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
         headers: {
@@ -322,8 +311,6 @@ export default function App() {
       });
 
       const data = await response.json();
-      console.log('Response data:', data);
-
       if (data.success && data.data) {
         setTokenUsage(data.data.tokenUsage);
 
@@ -372,8 +359,7 @@ export default function App() {
               showWarning(`Respons berhasil diperbaiki dengan ${retryTokens} tokens`, 3000);
             }
           } catch (retryError) {
-            console.error('Retry failed:', retryError);
-            showWarning('Retry gagal, menggunakan respons yang terpotong', 3000);
+            showWarning('Retry gagal, menggunakan respons yang terpotong :' + retryError, 3000);
           }
         }
 
@@ -391,8 +377,6 @@ export default function App() {
         throw new Error(data.error || data.message || 'Unknown error occurred');
       }
     } catch (error) {
-      console.error('Error sending message:', error);
-
       let errorMessage = error.message;
       if (error.message.includes('422') && error.message.includes('invalid_fields')) {
         errorMessage = 'Konfigurasi parameter tidak valid. Periksa pengaturan max_tokens, temperature, top_k, dan top_p.';
@@ -446,7 +430,6 @@ export default function App() {
   };
 
   const renderMessage = message => {
-    console.log('Rendering message:', message);
     if (message.type === 'user') {
       return (
         <div className='whitespace-pre-wrap'>
@@ -470,7 +453,7 @@ export default function App() {
         <div className='mb-4 p-4 bg-white dark:bg-gray-700 rounded-lg shadow-lg'>
           <div className='flex justify-between items-center'>
             <h1 className='flex text-sm xl:text-2xl font-bold text-gray-800 dark:text-white items-center gap-2'>
-              <Bot className='text-blue-600' />
+              <IBMIcon className='text-blue-600' />
               Chatbot AI IBM Granite
             </h1>
             <div className='flex gap-2 items-center'>
@@ -501,7 +484,7 @@ export default function App() {
         <div className='flex-1 overflow-y-auto w-full'>
           {messages.length === 0 ? (
             <div className='flex flex-col h-full p-4 text-gray-500 dark:text-white items-center justify-center'>
-              <Bot size={48} className='mb-4 text-gray-300' />
+              <IBMIcon size={48} className='mb-4 text-gray-300' />
               <p>Start a conversation with IBM Granite AI!</p>
               <p className='mt-2 text-sm'>Try asking about LLMs, coding, or any topic.</p>
             </div>
@@ -511,30 +494,30 @@ export default function App() {
                 <div
                   key={index}
                   className={`
-                    w-full mb-4 group
-                    ${message.type === 'user' ? 'flex justify-end' : 'flex justify-start'}
+                    w-full mb-4 group flex
+                    ${message.type === 'user' ? 'justify-end' : 'justify-center md:justify-start'}
                   `}>
                   <div
                     className={`
                       flex px-4 items-start gap-3
-                      ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}
+                      ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row  w-full'}
                     `}>
                     {message.type !== 'user' && (
                       <div className='flex flex-shrink-0 w-8 h-8 rounded-full items-center justify-center'>
-                        <Bot size={16} className='text-gray-500 dark:text-white' />
+                        <IBMIcon size={16} className='text-gray-500 dark:text-white' />
                       </div>
                     )}
 
                     <div
                       className={`
-                        w-full px-4 py-2 mb-2 rounded-lg text-lg relative
-                        ${message.type === 'user' ? 'bg-gray-200 flex flex-col-reverse text-black' : 'text-gray-800 dark:text-white'}
+                        px-4 py-2 mb-2 rounded-lg text-lg relative
+                        ${message.type === 'user' ? 'bg-gray-200 flex flex-col-reverse text-black w-full' : 'text-gray-800 dark:text-white w-full'}
                       `}>
                       {/* Edit button untuk user messages */}
                       {message.type === 'user' && editingMessageId !== index && (
                         <button
                           onClick={() => startEditMessage(index, message.content)}
-                          className='absolute bottom-[-25px] right-[-12px] p-2 text-sm text-white dark:bg-gray-600 dark:hover:bg-gray-700 bg-gray-400 hover:bg-gray-500 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-10'
+                          className='absolute bottom-[-25px] right-[-12px] p-2 text-sm text-white dark:bg-gray-600 dark:hover:bg-gray-700 bg-gray-400 hover:bg-gray-500 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 z-10'
                           title='Edit message'>
                           <Edit3 size={14} />
                           Edit
@@ -589,9 +572,9 @@ export default function App() {
               ))}
 
               {isLoading && (
-                <div className='flex w-full px-4 mb-4 justify-start'>
-                  <div className='flex items-start gap-3'>
-                    <div className='flex w-8 h-8 rounded-full items-center justify-center'>
+                <div className='flex w-full px-4 mb-4 justify-center md:justify-start'>
+                  <div className='flex items-start gap-3 max-w-4xl w-full'>
+                    <div className='flex w-8 h-8 rounded-full items-center justify-center md:justify-start'>
                       <Loader2 size={16} className='text-gray-500 dark:text-white animate-spin' />
                     </div>
                     <div className='px-4 py-2 text-gray-800 dark:text-white rounded-lg'>

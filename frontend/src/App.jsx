@@ -529,12 +529,21 @@ export default function App() {
                         <div className='w-full'>
                           <textarea
                             value={editingContent}
-                            onChange={e => setEditingContent(e.target.value)}
                             onKeyPress={handleEditKeyPress}
-                            className='w-full md:w-lg xl:w-2xl max-w-2xl p-2 border border-gray-300 rounded resize-none focus:outline-none '
+                            onChange={e => {
+                              setEditingContent(e.target.value);
+                              e.target.style.height = 'auto'; // reset height
+                              e.target.style.height = `${e.target.scrollHeight}px`; // set height sesuai konten
+                            }}
+                            onInput={e => {
+                              e.target.style.height = 'auto';
+                              e.target.style.height = `${e.target.scrollHeight}px`;
+                            }}
                             rows={3}
-                            autoFocus
+                            className='w-full md:w-lg xl:w-2xl max-w-2xl p-2 border border-gray-300 rounded resize-none focus:outline-none '
+                            style={{ minHeight: '1.5rem', maxHeight: '150px' }}
                           />
+
                           <div className='flex gap-2 mt-2 justify-end'>
                             <button
                               onClick={saveEditedMessage}
@@ -592,12 +601,21 @@ export default function App() {
           <div className='flex gap-2'>
             <textarea
               value={inputMessage}
-              onChange={e => setInputMessage(e.target.value)}
+              onChange={e => {
+                setInputMessage(e.target.value);
+                e.target.style.height = 'auto'; // reset height
+                e.target.style.height = `${e.target.scrollHeight}px`; // set height sesuai konten
+              }}
+              onInput={e => {
+                e.target.style.height = 'auto';
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
               onKeyPress={handleKeyPress}
               placeholder='Type your message here... (Press Enter to send)'
-              rows={2}
+              rows={1}
               disabled={isLoading}
-              className='flex-1 px-3 py-2 dark:text-white dark:placeholder:text-white border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='flex-1 px-3 py-2 dark:text-white dark:placeholder:text-white border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 overflow-y-auto'
+              style={{ minHeight: '2.5rem', maxHeight: '150px' }}
             />
             <button
               onClick={sendMessage}

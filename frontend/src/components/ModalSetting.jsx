@@ -150,24 +150,11 @@ const ModalSetting = ({ showSettings, setShowSettings, clearChat, config, update
                   <h3 className='font-medium text-gray-800 dark:text-white'>Documentation IBM</h3>
                   <p className='text-sm text-gray-600 mt-1 dark:text-white'>
                     <a
-                      href='https://github.com/machfudn/chatbotai-ibm'
+                      href='https://www.ibm.com/granite/docs/models/granite/'
                       target='_blank'
                       rel='noopener noreferrer'
                       className='text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400'>
                       Visit the official documentation IBM
-                    </a>
-                  </p>
-                </div>
-
-                <div className='p-4 bg-gray-50 dark:bg-gray-700 rounded-lg'>
-                  <h3 className='font-medium text-gray-800 dark:text-white'>How To Use App</h3>
-                  <p className='text-sm text-gray-600 mt-1 dark:text-white'>
-                    <a
-                      href='https://github.com/machfudn/chatbotai-ibm'
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400'>
-                      Visit manual book
                     </a>
                   </p>
                 </div>

@@ -420,7 +420,7 @@ User Input → React Frontend → Express.js API → Replicate Service → IBM G
 
 ![User Interface](./image/ui.png)
 
-🔗 **Website**: [chatbotai-ibm-frontend.vercel.app](https://chatbotai-ibm.vercel.app/)
+🔗 **Website**: [chatbotai-ibm.vercel.app](https://chatbotai-ibm.vercel.app/)
 
 📁 **Repository**: [github.com/machfudn/chatbotai-ibm](https://github.com/machfudn/chatbotai-ibm)
 
